@@ -36,11 +36,13 @@ export const TASK_PRIORITIES = {
 
 export const INSURANCE_PRODUCTS = [
   'Motor Insurance',
-  'Home Insurance',
+  'Property & Fire Insurance',
   'Life Insurance',
   'Health Insurance',
   'Travel Insurance',
-  'Business Insurance',
+  'Agricultural Insurance',
+  'Bond Insurance',
+  'Marine & Hull Insurance',
 ];
 
 export const NOTIFICATION_TYPES = {
