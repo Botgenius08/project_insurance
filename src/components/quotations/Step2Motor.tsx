@@ -16,6 +16,25 @@ type Step2MotorProps = {
 };
 
 const Step2Motor: React.FC<Step2MotorProps> = ({ formData, onChange, setStep }) => {
+  
+  // Handle form field changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      const syntheticEvent = {
+        target: {
+          name,
+          value: checked,
+          type
+        }
+      } as React.ChangeEvent<HTMLInputElement | HTMLSelectElement>;
+      onChange(syntheticEvent);
+    } else {
+      onChange(e);
+    }
+  };
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">Motor Insurance Details</h3>
@@ -29,7 +48,7 @@ const Step2Motor: React.FC<Step2MotorProps> = ({ formData, onChange, setStep }) 
             id="coverageType"
             name="coverageType"
             value={formData.coverageType}
-            onChange={onChange}
+            onChange={handleChange}
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
@@ -50,16 +69,7 @@ const Step2Motor: React.FC<Step2MotorProps> = ({ formData, onChange, setStep }) 
                 id="excessBuyBack"
                 name="excessBuyBack"
                 checked={formData.excessBuyBack || false}
-                onChange={(e) => {
-                  const event = {
-                    target: {
-                      name: 'excessBuyBack',
-                      value: e.target.checked,
-                      type: 'checkbox'
-                    }
-                  } as any;
-                  onChange(event);
-                }}
+                onChange={handleChange}
                 className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500"
               />
               <label htmlFor="excessBuyBack" className="ml-3 text-sm font-medium text-gray-700">
@@ -79,7 +89,7 @@ const Step2Motor: React.FC<Step2MotorProps> = ({ formData, onChange, setStep }) 
               id="vehicleValue"
               name="vehicleValue"
               value={formData.vehicleValue}
-              onChange={onChange}
+              onChange={handleChange}
               required
               min="0"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -95,7 +105,7 @@ const Step2Motor: React.FC<Step2MotorProps> = ({ formData, onChange, setStep }) 
               id="vehicleUsage"
               name="vehicleUsage"
               value={formData.vehicleUsage}
-              onChange={onChange}
+              onChange={handleChange}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
@@ -121,7 +131,7 @@ const Step2Motor: React.FC<Step2MotorProps> = ({ formData, onChange, setStep }) 
               id="passengerServiceType"
               name="passengerServiceType"
               value={formData.passengerServiceType || ''}
-              onChange={onChange}
+              onChange={handleChange}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
@@ -146,7 +156,7 @@ const Step2Motor: React.FC<Step2MotorProps> = ({ formData, onChange, setStep }) 
               id="numberOfSeats"
               name="numberOfSeats"
               value={formData.numberOfSeats || ''}
-              onChange={onChange}
+              onChange={handleChange}
               required
               min="1"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -166,16 +176,7 @@ const Step2Motor: React.FC<Step2MotorProps> = ({ formData, onChange, setStep }) 
                   id="truck"
                   name="truck"
                   checked={formData.truck || false}
-                  onChange={(e) => {
-                    const event = {
-                      target: {
-                        name: 'truck',
-                        value: e.target.checked,
-                        type: 'checkbox'
-                      }
-                    } as any;
-                    onChange(event);
-                  }}
+                  onChange={handleChange}
                   className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500"
                 />
                 <label htmlFor="truck" className="ml-3 text-sm font-medium text-gray-700">
@@ -188,16 +189,7 @@ const Step2Motor: React.FC<Step2MotorProps> = ({ formData, onChange, setStep }) 
                   id="trailer"
                   name="trailer"
                   checked={formData.trailer || false}
-                  onChange={(e) => {
-                    const event = {
-                      target: {
-                        name: 'trailer',
-                        value: e.target.checked,
-                        type: 'checkbox'
-                      }
-                    } as any;
-                    onChange(event);
-                  }}
+                  onChange={handleChange}
                   className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500"
                 />
                 <label htmlFor="trailer" className="ml-3 text-sm font-medium text-gray-700">
