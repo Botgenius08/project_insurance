@@ -19,6 +19,12 @@ const Step2Motor: React.FC<Step2MotorProps> = ({ formData, onChange, setStep }) 
   
   // Handle form field changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    // Add safety check for onChange function
+    if (typeof onChange !== 'function') {
+      console.error('onChange prop is not a function');
+      return;
+    }
+
     const { name, value, type } = e.target;
     
     if (type === 'checkbox') {
