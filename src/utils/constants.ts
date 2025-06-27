@@ -39,6 +39,7 @@ export const INSURANCE_PRODUCTS = [
   'Home Insurance',
   'Life Insurance',
   'Health Insurance',
+  'Travel Insurance',
   'Business Insurance',
 ];
 
