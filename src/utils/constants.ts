@@ -35,7 +35,7 @@ export const TASK_PRIORITIES = {
 };
 
 export const INSURANCE_PRODUCTS = [
-  'Car Insurance',
+  'Motor Insurance',
   'Home Insurance',
   'Life Insurance',
   'Health Insurance',
