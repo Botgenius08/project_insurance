@@ -70,3 +70,5 @@ export const Step2Motor: React.FC<Step2MotorProps> = ({ formData, setFormData, s
     </div>
   );
 };
+
+export default Step2Motor;
