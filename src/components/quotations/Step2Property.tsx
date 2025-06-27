@@ -80,4 +80,5 @@ export const Step2Property: React.FC<Step2PropertyProps> = ({ formData, setFormD
     </div>
   );
 };
-export default Step2Motor;
+
+export default Step2Property;
