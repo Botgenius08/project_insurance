@@ -73,7 +73,7 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
       return ['dashboard', 'quotations', 'policies', 'claims'].includes(tab);
     }
     if (userType === 'employee') {
-      return ['dashboard', 'tasks', 'approvals'].includes(tab);
+      return ['dashboard', 'finance', 'underwriting', 'claims', 'reinsurance', 'actuarial', 'tasks', 'approvals'].includes(tab);
     }
     return false;
   };

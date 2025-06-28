@@ -17,6 +17,9 @@ export const PERMISSIONS = {
   PROCESS_APPROVALS: 'process_approvals',
   UNDERWRITING: 'underwriting',
   FINANCE_OPERATIONS: 'finance_operations',
+  REINSURANCE_MANAGEMENT: 'reinsurance_management',
+  ACTUARIAL_ANALYSIS: 'actuarial_analysis',
+  CLAIMS_PROCESSING: 'claims_processing',
 } as const;
 
 export const ROLE_PERMISSIONS: Record<UserType, string[]> = {
@@ -38,6 +41,9 @@ export const ROLE_PERMISSIONS: Record<UserType, string[]> = {
     PERMISSIONS.PROCESS_APPROVALS,
     PERMISSIONS.UNDERWRITING,
     PERMISSIONS.FINANCE_OPERATIONS,
+    PERMISSIONS.REINSURANCE_MANAGEMENT,
+    PERMISSIONS.ACTUARIAL_ANALYSIS,
+    PERMISSIONS.CLAIMS_PROCESSING,
   ],
 };
 
@@ -60,6 +66,10 @@ export const canAccessModule = (user: User | null, module: string): boolean => {
     claims: [PERMISSIONS.VIEW_CLAIMS],
     
     // Employee modules (RESTRICTED)
+    finance: [PERMISSIONS.FINANCE_OPERATIONS],
+    underwriting: [PERMISSIONS.UNDERWRITING],
+    reinsurance: [PERMISSIONS.REINSURANCE_MANAGEMENT],
+    actuarial: [PERMISSIONS.ACTUARIAL_ANALYSIS],
     tasks: [PERMISSIONS.VIEW_TASKS],
     approvals: [PERMISSIONS.VIEW_APPROVALS],
   };
@@ -79,8 +89,8 @@ export const validateAccess = (user: User | null, module: string): boolean => {
   }
   
   if (user.type === 'employee') {
-    // Employees can ONLY access: tasks, approvals
-    return ['tasks', 'approvals', 'dashboard'].includes(module);
+    // Employees can ONLY access: finance, underwriting, claims, reinsurance, actuarial, tasks, approvals
+    return ['finance', 'underwriting', 'claims', 'reinsurance', 'actuarial', 'tasks', 'approvals', 'dashboard'].includes(module);
   }
   
   return false;

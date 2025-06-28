@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, FileText, Shield, DollarSign, CheckCircle, Clock } from 'lucide-react';
+import { Home, FileText, Shield, DollarSign, CheckCircle, Clock, Calculator, TrendingUp, BarChart3, Users } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useAppState } from '../../context/AppStateContext';
 
@@ -67,22 +67,49 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobile = false, onItem
       ) : (
         <>
           <button
-            onClick={() => handleTabClick('tasks')}
+            onClick={() => handleTabClick('finance')}
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
-              activeTab === 'tasks' ? 'bg-blue-100 text-blue-700' : itemClass
+              activeTab === 'finance' ? 'bg-blue-100 text-blue-700' : itemClass
             }`}
           >
-            <CheckCircle className="w-5 h-5" />
-            <span>Tasks</span>
+            <DollarSign className="w-5 h-5" />
+            <span>Finance</span>
           </button>
           <button
-            onClick={() => handleTabClick('approvals')}
+            onClick={() => handleTabClick('underwriting')}
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
-              activeTab === 'approvals' ? 'bg-blue-100 text-blue-700' : itemClass
+              activeTab === 'underwriting' ? 'bg-blue-100 text-blue-700' : itemClass
             }`}
           >
-            <Clock className="w-5 h-5" />
-            <span>Approvals</span>
+            <FileText className="w-5 h-5" />
+            <span>Underwriting</span>
+          </button>
+          <button
+            onClick={() => handleTabClick('claims')}
+            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
+              activeTab === 'claims' ? 'bg-blue-100 text-blue-700' : itemClass
+            }`}
+          >
+            <Shield className="w-5 h-5" />
+            <span>Claims</span>
+          </button>
+          <button
+            onClick={() => handleTabClick('reinsurance')}
+            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
+              activeTab === 'reinsurance' ? 'bg-blue-100 text-blue-700' : itemClass
+            }`}
+          >
+            <Users className="w-5 h-5" />
+            <span>Reinsurance</span>
+          </button>
+          <button
+            onClick={() => handleTabClick('actuarial')}
+            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
+              activeTab === 'actuarial' ? 'bg-blue-100 text-blue-700' : itemClass
+            }`}
+          >
+            <BarChart3 className="w-5 h-5" />
+            <span>Actuarial</span>
           </button>
         </>
       )}
