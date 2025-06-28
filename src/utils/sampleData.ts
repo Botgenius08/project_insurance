@@ -5,7 +5,7 @@ export const sampleQuotations: Quotation[] = [
     id: 1, 
     clientName: 'John Doe', 
     product: 'Car Insurance', 
-    amount: 1200, 
+    amount: 2880000, 
     status: 'pending', 
     date: '2025-06-20' 
   },
@@ -13,7 +13,7 @@ export const sampleQuotations: Quotation[] = [
     id: 2, 
     clientName: 'Jane Smith', 
     product: 'Home Insurance', 
-    amount: 800, 
+    amount: 1920000, 
     status: 'approved', 
     date: '2025-06-22' 
   }
@@ -25,7 +25,7 @@ export const samplePolicies: Policy[] = [
     policyNumber: 'POL001', 
     clientName: 'Alice Johnson', 
     product: 'Life Insurance', 
-    premium: 2400, 
+    premium: 5760000, 
     status: 'active' 
   },
   { 
@@ -33,7 +33,7 @@ export const samplePolicies: Policy[] = [
     policyNumber: 'POL002', 
     clientName: 'Bob Wilson', 
     product: 'Health Insurance', 
-    premium: 1800, 
+    premium: 4320000, 
     status: 'pending' 
   }
 ];
@@ -43,7 +43,7 @@ export const sampleClaims: Claim[] = [
     id: 1, 
     claimNumber: 'CLM001', 
     clientName: 'Charlie Brown', 
-    amount: 5000, 
+    amount: 12000000, 
     status: 'submitted', 
     date: '2025-06-23' 
   },
@@ -51,7 +51,7 @@ export const sampleClaims: Claim[] = [
     id: 2, 
     claimNumber: 'CLM002', 
     clientName: 'Diana Prince', 
-    amount: 3200, 
+    amount: 7680000, 
     status: 'processing', 
     date: '2025-06-21' 
   }

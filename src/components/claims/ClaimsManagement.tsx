@@ -23,7 +23,7 @@ export const ClaimsManagement: React.FC = () => {
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Claim #</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Client</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount (TZS)</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
@@ -34,7 +34,7 @@ export const ClaimsManagement: React.FC = () => {
                 <tr key={claim.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 text-sm font-medium text-gray-900">{claim.claimNumber}</td>
                   <td className="px-4 py-3 text-sm text-gray-700">{claim.clientName}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700">${claim.amount.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-sm text-gray-700">{claim.amount.toLocaleString()} TZS</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 text-xs rounded-full ${
                       claim.status === 'approved' ? 'bg-green-100 text-green-700' :

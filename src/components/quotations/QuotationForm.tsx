@@ -147,7 +147,7 @@ export const QuotationForm: React.FC<{ onCancel: () => void }> = ({ onCancel }) 
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Coverage Amount</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Coverage Amount (TZS)</label>
             <input
               type="number"
               value={formData.amount}

@@ -34,7 +34,7 @@ export const StatsGrid: React.FC = () => {
     },
     {
       title: 'Monthly Revenue',
-      value: '$24,500',
+      value: '58,800,000 TZS',
       icon: DollarSign,
       color: 'text-purple-600'
     }

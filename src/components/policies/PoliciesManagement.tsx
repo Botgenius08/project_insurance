@@ -24,7 +24,7 @@ export const PoliciesManagement: React.FC = () => {
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Policy #</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Client</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Premium</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Premium (TZS)</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
@@ -35,7 +35,7 @@ export const PoliciesManagement: React.FC = () => {
                   <td className="px-4 py-3 text-sm font-medium text-gray-900">{policy.policyNumber}</td>
                   <td className="px-4 py-3 text-sm text-gray-700">{policy.clientName}</td>
                   <td className="px-4 py-3 text-sm text-gray-700">{policy.product}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700">${policy.premium.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-sm text-gray-700">{policy.premium.toLocaleString()} TZS</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 text-xs rounded-full ${
                       policy.status === 'active' ? 'bg-green-100 text-green-700' :
