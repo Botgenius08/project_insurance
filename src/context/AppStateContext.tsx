@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Quotation, Policy, Claim, Task, Notification } from '../types';
 import { sampleQuotations, samplePolicies, sampleClaims, sampleTasks, sampleNotifications } from '../utils/sampleData';
+import { useAuth } from './AuthContext';
 
 interface AppStateContextType {
   // Data
@@ -39,6 +40,7 @@ interface AppStateProviderProps {
 }
 
 export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
+  const { user } = useAuth();
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [policies, setPolicies] = useState<Policy[]>([]);
   const [claims, setClaims] = useState<Claim[]>([]);
@@ -55,7 +57,43 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
     setNotifications(sampleNotifications);
   }, []);
 
+  // Security: Reset to dashboard when user type changes or unauthorized access
+  useEffect(() => {
+    if (user) {
+      // Validate current tab access based on user role
+      const isValidTab = validateTabAccess(activeTab, user.type);
+      if (!isValidTab) {
+        setActiveTab('dashboard');
+      }
+    }
+  }, [user, activeTab]);
+
+  const validateTabAccess = (tab: string, userType: 'intermediary' | 'employee'): boolean => {
+    if (userType === 'intermediary') {
+      return ['dashboard', 'quotations', 'policies', 'claims'].includes(tab);
+    }
+    if (userType === 'employee') {
+      return ['dashboard', 'tasks', 'approvals'].includes(tab);
+    }
+    return false;
+  };
+
+  const secureSetActiveTab = (tab: string) => {
+    if (user && validateTabAccess(tab, user.type)) {
+      setActiveTab(tab);
+    } else {
+      // Unauthorized access attempt - redirect to dashboard
+      setActiveTab('dashboard');
+    }
+  };
+
   const addQuotation = (quotationData: Omit<Quotation, 'id'>) => {
+    // Security: Only intermediaries can add quotations
+    if (user?.type !== 'intermediary') {
+      console.warn('Unauthorized attempt to add quotation');
+      return;
+    }
+    
     const newQuotation: Quotation = {
       ...quotationData,
       id: quotations.length + 1,
@@ -64,6 +102,12 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
   };
 
   const updateTask = (taskId: number, updates: Partial<Task>) => {
+    // Security: Only employees can update tasks
+    if (user?.type !== 'employee') {
+      console.warn('Unauthorized attempt to update task');
+      return;
+    }
+    
     setTasks(prev => prev.map(task => 
       task.id === taskId ? { ...task, ...updates } : task
     ));
@@ -76,7 +120,7 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
     tasks,
     notifications,
     activeTab,
-    setActiveTab,
+    setActiveTab: secureSetActiveTab,
     addQuotation,
     updateTask,
     setQuotations,

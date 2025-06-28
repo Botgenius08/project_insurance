@@ -11,7 +11,7 @@ import { TaskManagement } from './tasks/TaskManagement';
 import { ApprovalsManagement } from './approvals/ApprovalsManagement';
 
 const InsurancePlatform: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { activeTab } = useAppState();
 
   if (!isAuthenticated) {
@@ -19,19 +19,29 @@ const InsurancePlatform: React.FC = () => {
   }
 
   const renderContent = () => {
+    // Security check: Ensure only employees can access tasks and approvals
+    if ((activeTab === 'tasks' || activeTab === 'approvals') && user?.type !== 'employee') {
+      return <Dashboard />; // Redirect to dashboard if unauthorized access attempt
+    }
+
+    // Security check: Ensure only intermediaries can access quotations, policies, claims
+    if ((activeTab === 'quotations' || activeTab === 'policies' || activeTab === 'claims') && user?.type !== 'intermediary') {
+      return <Dashboard />; // Redirect to dashboard if unauthorized access attempt
+    }
+
     switch (activeTab) {
       case 'dashboard':
         return <Dashboard />;
       case 'quotations':
-        return <QuotationsPage />;
+        return user?.type === 'intermediary' ? <QuotationsPage /> : <Dashboard />;
       case 'policies':
-        return <PoliciesManagement />;
+        return user?.type === 'intermediary' ? <PoliciesManagement /> : <Dashboard />;
       case 'claims':
-        return <ClaimsManagement />;
+        return user?.type === 'intermediary' ? <ClaimsManagement /> : <Dashboard />;
       case 'tasks':
-        return <TaskManagement />;
+        return user?.type === 'employee' ? <TaskManagement /> : <Dashboard />;
       case 'approvals':
-        return <ApprovalsManagement />;
+        return user?.type === 'employee' ? <ApprovalsManagement /> : <Dashboard />;
       default:
         return <Dashboard />;
     }
