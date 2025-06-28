@@ -91,7 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setLoading(true);
       
       // For demo purposes, create a demo email based on username and user type
-      const email = `${username.toLowerCase().replace(/\s+/g, '')}@${userType}.demo`;
+      const email = `${username.toLowerCase().replace(/\s+/g, '')}.${userType}@example.com`;
       
       // Try to sign in first
       let { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
