@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Shield, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { UserTypeSelector } from './UserTypeSelector';
+import { UserType } from '../../types';
 
 export const LoginForm: React.FC = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [userType, setUserType] = useState<UserType>('intermediary');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const { login, loading } = useAuth();
@@ -51,6 +53,8 @@ export const LoginForm: React.FC = () => {
         )}
         
         <form onSubmit={handleSubmit} className="space-y-6">
+          <UserTypeSelector userType={userType} onChange={setUserType} />
+          
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
             <input
@@ -99,14 +103,6 @@ export const LoginForm: React.FC = () => {
             {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
-        
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-sm font-medium text-gray-700 mb-2">Test Credentials:</h3>
-          <div className="text-xs text-gray-600 space-y-1">
-            <div><strong>Intermediary:</strong> intermediary1 / password123</div>
-            <div><strong>Employee:</strong> employee1 / password123</div>
-          </div>
-        </div>
       </div>
     </div>
   );
