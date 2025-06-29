@@ -29,15 +29,23 @@ class AuthService {
     try {
       const { username, password } = credentials;
 
-      // Fetch user from database
+      // Fetch user from database - using maybeSingle() to avoid console errors when no user found
       const { data: user, error } = await supabase
         .from('users')
         .select('*')
         .eq('username', username)
         .eq('is_active', true)
-        .single();
+        .maybeSingle();
 
-      if (error || !user) {
+      if (error) {
+        console.error('Database error during login:', error);
+        return {
+          success: false,
+          error: 'An error occurred during login'
+        };
+      }
+
+      if (!user) {
         return {
           success: false,
           error: 'Invalid username or password'
