@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Shield, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { UserTypeSelector } from './UserTypeSelector';
+import { checkDemoUsers } from '../../utils/checkDemoUsers';
 
 export const LoginForm: React.FC = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
@@ -30,6 +30,18 @@ export const LoginForm: React.FC = () => {
       }
     } catch (error) {
       setError('An error occurred during login');
+    }
+  };
+
+  // Function to check demo users (for debugging)
+  const handleCheckDemoUsers = async () => {
+    const result = await checkDemoUsers();
+    if (result.success) {
+      console.log('Demo users found:', result.users);
+      alert(`Found ${result.users?.length || 0} demo users. Check console for details.`);
+    } else {
+      console.error('Error checking demo users:', result.error);
+      alert(`Error: ${result.error}`);
     }
   };
 
@@ -106,6 +118,14 @@ export const LoginForm: React.FC = () => {
             <div><strong>Intermediary:</strong> intermediary1 / password123</div>
             <div><strong>Employee:</strong> employee1 / password123</div>
           </div>
+          
+          <button
+            type="button"
+            onClick={handleCheckDemoUsers}
+            className="mt-3 w-full bg-gray-200 text-gray-700 py-1 px-3 rounded text-xs hover:bg-gray-300 transition duration-200"
+          >
+            Check Demo Users in Database
+          </button>
         </div>
       </div>
     </div>
