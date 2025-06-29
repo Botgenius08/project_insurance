@@ -11,7 +11,7 @@ export const StatsGrid: React.FC = () => {
   
   if (!user) return null;
 
-  const isIntermediary = user.type === 'intermediary';
+  const isIntermediary = user.user_type === 'intermediary';
 
   const intermediaryStats: StatsCardData[] = [
     {
@@ -33,8 +33,8 @@ export const StatsGrid: React.FC = () => {
       color: 'text-orange-600'
     },
     {
-      title: 'Monthly Revenue',
-      value: '58,800,000 TZS',
+      title: 'Total Premium',
+      value: `${policies.reduce((sum, policy) => sum + policy.premium, 0).toLocaleString()} TZS`,
       icon: DollarSign,
       color: 'text-purple-600'
     }
@@ -48,22 +48,22 @@ export const StatsGrid: React.FC = () => {
       color: 'text-red-600'
     },
     {
-      title: 'Approvals Needed',
-      value: 5,
-      icon: CheckCircle,
-      color: 'text-yellow-600'
+      title: 'Total Quotations',
+      value: quotations.length,
+      icon: FileText,
+      color: 'text-blue-600'
     },
     {
-      title: 'Completed Today',
-      value: 8,
-      icon: CheckCircle,
+      title: 'Active Policies',
+      value: policies.filter(p => p.status === 'active').length,
+      icon: Shield,
       color: 'text-green-600'
     },
     {
-      title: 'Team Members',
-      value: 12,
-      icon: Users,
-      color: 'text-blue-600'
+      title: 'Claims Processing',
+      value: claims.filter(c => c.status === 'processing').length,
+      icon: CheckCircle,
+      color: 'text-yellow-600'
     }
   ];
 

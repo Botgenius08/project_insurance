@@ -1,7 +1,13 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { Quotation, Policy, Claim, Task, Notification } from '../types';
 import { useAuth } from './AuthContext';
-import { sampleQuotations, samplePolicies, sampleClaims, sampleTasks, sampleNotifications } from '../utils/sampleData';
+import { dataService } from '../services/dataService';
+import { Database } from '../types/database';
+
+type Quotation = Database['public']['Tables']['quotations']['Row'];
+type Policy = Database['public']['Tables']['policies']['Row'];
+type Claim = Database['public']['Tables']['claims']['Row'];
+type Task = Database['public']['Tables']['tasks']['Row'];
+type Notification = Database['public']['Tables']['notifications']['Row'];
 
 interface AppStateContextType {
   // Data
@@ -16,8 +22,12 @@ interface AppStateContextType {
   setActiveTab: (tab: string) => void;
   
   // Data Actions
-  addQuotation: (quotation: Omit<Quotation, 'id'>) => void;
-  updateTask: (taskId: number, updates: Partial<Task>) => void;
+  addQuotation: (quotation: Database['public']['Tables']['quotations']['Insert']) => Promise<void>;
+  updateTask: (taskId: string, updates: Database['public']['Tables']['tasks']['Update']) => Promise<void>;
+  refreshData: () => Promise<void>;
+  
+  // Loading states
+  loading: boolean;
 }
 
 const AppStateContext = createContext<AppStateContextType | undefined>(undefined);
@@ -35,20 +45,35 @@ interface AppStateProviderProps {
 }
 
 export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [loading, setLoading] = useState(false);
   
-  // Initialize with sample data
-  const [quotations, setQuotations] = useState<Quotation[]>(sampleQuotations);
-  const [policies, setPolicies] = useState<Policy[]>(samplePolicies);
-  const [claims, setClaims] = useState<Claim[]>(sampleClaims);
-  const [tasks, setTasks] = useState<Task[]>(sampleTasks);
-  const [notifications, setNotifications] = useState<Notification[]>(sampleNotifications);
+  // Data state
+  const [quotations, setQuotations] = useState<Quotation[]>([]);
+  const [policies, setPolicies] = useState<Policy[]>([]);
+  const [claims, setClaims] = useState<Claim[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  // Load data when user authenticates
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      refreshData();
+    } else {
+      // Clear data when user logs out
+      setQuotations([]);
+      setPolicies([]);
+      setClaims([]);
+      setTasks([]);
+      setNotifications([]);
+    }
+  }, [isAuthenticated, user]);
 
   // Security: Reset to dashboard when user type changes or unauthorized access
   useEffect(() => {
     if (user) {
-      const isValidTab = validateTabAccess(activeTab, user.type);
+      const isValidTab = validateTabAccess(activeTab, user.user_type);
       if (!isValidTab) {
         setActiveTab('dashboard');
       }
@@ -60,42 +85,66 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
       return ['dashboard', 'quotations', 'policies', 'claims'].includes(tab);
     }
     if (userType === 'employee') {
-      return ['dashboard', 'finance', 'underwriting', 'claims', 'reinsurance', 'actuarial'].includes(tab);
+      return ['dashboard', 'finance', 'underwriting', 'claims', 'reinsurance', 'actuarial', 'tasks', 'approvals'].includes(tab);
     }
     return false;
   };
 
   const secureSetActiveTab = (tab: string) => {
-    if (user && validateTabAccess(tab, user.type)) {
+    if (user && validateTabAccess(tab, user.user_type)) {
       setActiveTab(tab);
     } else {
       setActiveTab('dashboard');
     }
   };
 
-  const addQuotation = (quotationData: Omit<Quotation, 'id'>) => {
-    if (user?.type !== 'intermediary') {
+  const refreshData = async () => {
+    if (!isAuthenticated) return;
+    
+    setLoading(true);
+    try {
+      const [quotationsData, policiesData, claimsData, tasksData, notificationsData] = await Promise.all([
+        dataService.getQuotations(),
+        dataService.getPolicies(),
+        dataService.getClaims(),
+        dataService.getTasks(),
+        dataService.getNotifications()
+      ]);
+
+      setQuotations(quotationsData);
+      setPolicies(policiesData);
+      setClaims(claimsData);
+      setTasks(tasksData);
+      setNotifications(notificationsData);
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addQuotation = async (quotationData: Database['public']['Tables']['quotations']['Insert']) => {
+    if (user?.user_type !== 'intermediary') {
       console.warn('Unauthorized attempt to add quotation');
       return;
     }
 
-    const newQuotation: Quotation = {
-      ...quotationData,
-      id: Date.now(),
-    };
-    
-    setQuotations(prev => [newQuotation, ...prev]);
+    const success = await dataService.createQuotation(quotationData);
+    if (success) {
+      await refreshData(); // Refresh to get the latest data
+    }
   };
 
-  const updateTask = (taskId: number, updates: Partial<Task>) => {
-    if (user?.type !== 'employee') {
+  const updateTask = async (taskId: string, updates: Database['public']['Tables']['tasks']['Update']) => {
+    if (user?.user_type !== 'employee') {
       console.warn('Unauthorized attempt to update task');
       return;
     }
 
-    setTasks(prev => prev.map(task => 
-      task.id === taskId ? { ...task, ...updates } : task
-    ));
+    const success = await dataService.updateTask(taskId, updates);
+    if (success) {
+      await refreshData(); // Refresh to get the latest data
+    }
   };
 
   const value: AppStateContextType = {
@@ -108,6 +157,8 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
     setActiveTab: secureSetActiveTab,
     addQuotation,
     updateTask,
+    refreshData,
+    loading,
   };
 
   return (

@@ -1,34 +1,35 @@
 import React, { useState } from 'react';
-import { Shield } from 'lucide-react';
-import { UserType } from '../../types';
+import { Shield, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { UserTypeSelector } from './UserTypeSelector';
 
 export const LoginForm: React.FC = () => {
-  const [userType, setUserType] = useState<UserType>('intermediary');
   const [credentials, setCredentials] = useState({ username: '', password: '' });
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const { login, loading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     
     if (!credentials.username.trim()) {
-      alert('Please enter a username');
+      setError('Please enter a username');
       return;
     }
     
-    setIsLoading(true);
+    if (!credentials.password) {
+      setError('Please enter a password');
+      return;
+    }
     
     try {
-      const success = await login(credentials.username, credentials.password, userType);
+      const success = await login(credentials);
       if (!success) {
-        alert('Login failed');
+        setError('Invalid username or password');
       }
     } catch (error) {
-      alert('Login error occurred');
-    } finally {
-      setIsLoading(false);
+      setError('An error occurred during login');
     }
   };
 
@@ -43,9 +44,13 @@ export const LoginForm: React.FC = () => {
           <p className="text-gray-600">Secure access for intermediaries and employees</p>
         </div>
         
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            {error}
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit} className="space-y-6">
-          <UserTypeSelector userType={userType} onChange={setUserType} />
-          
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
             <input
@@ -55,28 +60,53 @@ export const LoginForm: React.FC = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter your username"
               required
+              disabled={loading}
             />
           </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-            <input
-              type="password"
-              value={credentials.password}
-              onChange={(e) => setCredentials({...credentials, password: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter your password"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={credentials.password}
+                onChange={(e) => setCredentials({...credentials, password: e.target.value})}
+                className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter your password"
+                required
+                disabled={loading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                disabled={loading}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4 text-gray-400" />
+                ) : (
+                  <Eye className="h-4 w-4 text-gray-400" />
+                )}
+              </button>
+            </div>
           </div>
           
           <button
             type="submit"
-            disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 font-medium disabled:opacity-50"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Signing In...' : 'Sign In'}
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
+        
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+          <h3 className="text-sm font-medium text-gray-700 mb-2">Test Credentials:</h3>
+          <div className="text-xs text-gray-600 space-y-1">
+            <div><strong>Intermediary:</strong> intermediary1 / password123</div>
+            <div><strong>Employee:</strong> employee1 / password123</div>
+          </div>
+        </div>
       </div>
     </div>
   );

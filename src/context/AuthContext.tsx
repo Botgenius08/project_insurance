@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { User, UserType } from '../types';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { authService, AuthUser, LoginCredentials } from '../services/authService';
 import { getUserPermissions } from '../utils/rolePermissions';
 
 interface AuthContextType {
-  user: User | null;
-  login: (username: string, password: string, userType: UserType) => Promise<boolean>;
+  user: AuthUser | null;
+  login: (credentials: LoginCredentials) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
   loading: boolean;
@@ -25,30 +25,30 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const login = async (username: string, password: string, userType: UserType): Promise<boolean> => {
+  useEffect(() => {
+    // Check if user is already authenticated on app start
+    const currentUser = authService.getCurrentUser();
+    if (currentUser) {
+      setUser(currentUser);
+    }
+  }, []);
+
+  const login = async (credentials: LoginCredentials): Promise<boolean> => {
     try {
       setLoading(true);
       
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await authService.login(credentials);
       
-      // For demo purposes, accept any username/password combination
-      if (username.trim()) {
-        const newUser: User = {
-          id: Date.now(),
-          name: username,
-          type: userType,
-          permissions: getUserPermissions(userType),
-        };
-        
-        setUser(newUser);
+      if (response.success && response.user) {
+        setUser(response.user);
         return true;
+      } else {
+        console.error('Login failed:', response.error);
+        return false;
       }
-      
-      return false;
     } catch (error) {
       console.error('Login error:', error);
       return false;
@@ -57,7 +57,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await authService.logout();
     setUser(null);
   };
 
