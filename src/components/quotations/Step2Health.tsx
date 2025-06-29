@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 interface Step2HealthProps {
   formData: any;
@@ -32,140 +32,6 @@ export const Step2Health: React.FC<Step2HealthProps> = ({ formData, setFormData,
       ...formData,
       [name]: value
     });
-  };
-
-  const calculatePremium = () => {
-    const {
-      whoIsThisFor,
-      coverageLevel,
-      numberOfPeople,
-      numberOfEmployees,
-      ageRange
-    } = localData;
-
-    if (!whoIsThisFor || !coverageLevel) {
-      return <div className="text-gray-400">Please complete all required fields</div>;
-    }
-
-    let premium = 0;
-    let description = '';
-
-    if (whoIsThisFor === 'individual') {
-      const baseRates = {
-        basic: 500000,
-        standard: 800000,
-        premium: 1200000,
-        comprehensive: 1800000
-      };
-      
-      premium = baseRates[coverageLevel as keyof typeof baseRates] || 0;
-      
-      // Age-based adjustments
-      if (ageRange) {
-        const ageMultipliers = {
-          '18-25': 0.9,
-          '26-35': 1.0,
-          '36-45': 1.1,
-          '46-55': 1.3,
-          '56-65': 1.5,
-          '65+': 1.8
-        };
-        premium *= ageMultipliers[ageRange as keyof typeof ageMultipliers] || 1.0;
-      }
-      
-      description = 'Individual Health Insurance Plan';
-    } else if (whoIsThisFor === 'family') {
-      const familyBaseRates = {
-        basic: 1200000,
-        standard: 1800000,
-        premium: 2500000,
-        comprehensive: 3500000
-      };
-      
-      premium = familyBaseRates[coverageLevel as keyof typeof familyBaseRates] || 0;
-      
-      // Family size adjustments
-      if (numberOfPeople) {
-        const sizeMultipliers = {
-          '2': 1.0,
-          '3': 1.3,
-          '4': 1.5,
-          '5': 1.7,
-          '6': 1.9,
-          '7+': 2.1
-        };
-        premium *= sizeMultipliers[numberOfPeople as keyof typeof sizeMultipliers] || 1.0;
-      }
-      
-      description = 'Family Health Insurance Plan';
-    } else if (whoIsThisFor === 'group') {
-      const groupBaseRates = {
-        basic: 400000,
-        standard: 600000,
-        premium: 900000,
-        comprehensive: 1300000,
-        executive: 1800000
-      };
-      
-      const perPersonRate = groupBaseRates[coverageLevel as keyof typeof groupBaseRates] || 0;
-      
-      if (numberOfEmployees) {
-        const employeeRanges = {
-          '1-10': 7,
-          '11-25': 18,
-          '26-50': 38,
-          '51-100': 75,
-          '101-250': 175,
-          '251-500': 375,
-          '500+': 750
-        };
-        
-        const avgEmployees = employeeRanges[numberOfEmployees as keyof typeof employeeRanges] || 0;
-        premium = perPersonRate * avgEmployees;
-        
-        // Volume discounts
-        if (avgEmployees > 50) premium *= 0.9;
-        if (avgEmployees > 100) premium *= 0.85;
-        if (avgEmployees > 250) premium *= 0.8;
-      }
-      
-      description = 'Group Health Insurance Plan';
-    }
-
-    if (premium === 0) {
-      return <div className="text-green-400 font-medium">Our Team will contact you shortly for a custom quote</div>;
-    }
-
-    const vat = premium * 0.18;
-    const totalPremium = premium + vat;
-
-    return (
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gray-700/50 p-4 rounded-md">
-            <div className="text-gray-400 text-sm mb-1">Premium</div>
-            <div className="text-white text-lg font-semibold">
-              {premium.toLocaleString()} TZS
-            </div>
-          </div>
-          <div className="bg-gray-700/50 p-4 rounded-md">
-            <div className="text-gray-400 text-sm mb-1">VAT (18%)</div>
-            <div className="text-white text-lg font-semibold">
-              {vat.toLocaleString()} TZS
-            </div>
-          </div>
-          <div className="bg-green-600/20 border border-green-500 p-4 rounded-md">
-            <div className="text-green-400 text-sm mb-1">Total Premium</div>
-            <div className="text-green-400 text-lg font-bold">
-              {totalPremium.toLocaleString()} TZS
-            </div>
-          </div>
-        </div>
-        <div className="text-center">
-          <p className="text-gray-300 text-sm">{description}</p>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -409,12 +275,6 @@ export const Step2Health: React.FC<Step2HealthProps> = ({ formData, setFormData,
             </div>
           </div>
         )}
-
-        {/* Premium Calculation */}
-        <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-700 mb-3">Premium Calculation</h4>
-          {calculatePremium()}
-        </div>
 
         {/* Information Section */}
         {localData.whoIsThisFor && (
