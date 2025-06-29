@@ -13,32 +13,55 @@ export const StatsGrid: React.FC = () => {
 
   const isIntermediary = user.type === 'intermediary';
 
-  const intermediaryStats: StatsCardData[] = [
-    {
-      title: 'Active Quotations',
-      value: quotations.length,
-      icon: FileText,
-      color: 'text-blue-600'
-    },
-    {
-      title: 'Active Policies',
-      value: policies.length,
-      icon: Shield,
-      color: 'text-green-600'
-    },
-    {
-      title: 'Open Claims',
-      value: claims.length,
-      icon: DollarSign,
-      color: 'text-orange-600'
-    },
-    {
-      title: 'Total Premium',
-      value: `${policies.reduce((sum, policy) => sum + policy.premium, 0).toLocaleString()} TZS`,
-      icon: DollarSign,
-      color: 'text-purple-600'
-    }
-  ];
+  // Filter data for intermediary to show only their own data
+  const getIntermediaryStats = () => {
+    // For demo purposes, we'll simulate filtering by intermediary
+    // In a real app, this would filter by user.id or similar identifier
+    const userQuotations = quotations; // In real app: quotations.filter(q => q.createdBy === user.id)
+    const userPolicies = policies.filter(p => p.status === 'active'); // Only active policies
+    const userClaims = claims.filter(c => c.status !== 'approved' && c.status !== 'rejected'); // Open claims
+    
+    // Calculate total premium for active policies
+    const totalPremium = userPolicies.reduce((sum, policy) => sum + policy.premium, 0);
+
+    return {
+      quotations: userQuotations.length,
+      activePolicies: userPolicies.length,
+      openClaims: userClaims.length,
+      totalPremium: totalPremium
+    };
+  };
+
+  const intermediaryStats: StatsCardData[] = (() => {
+    const stats = getIntermediaryStats();
+    
+    return [
+      {
+        title: 'Active Quotations',
+        value: stats.quotations,
+        icon: FileText,
+        color: 'text-blue-600'
+      },
+      {
+        title: 'Active Policies',
+        value: stats.activePolicies,
+        icon: Shield,
+        color: 'text-green-600'
+      },
+      {
+        title: 'Open Claims',
+        value: stats.openClaims,
+        icon: DollarSign,
+        color: 'text-orange-600'
+      },
+      {
+        title: 'Total Premium',
+        value: `${stats.totalPremium.toLocaleString()} TZS`,
+        icon: DollarSign,
+        color: 'text-purple-600'
+      }
+    ];
+  })();
 
   const employeeStats: StatsCardData[] = [
     {
