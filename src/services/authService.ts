@@ -10,6 +10,7 @@ export interface AuthUser {
 export interface LoginCredentials {
   username: string;
   password: string;
+  userType: UserType; // Add userType to credentials
 }
 
 export interface LoginResponse {
@@ -23,18 +24,18 @@ class AuthService {
 
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
-      const { username, password } = credentials;
+      const { username, password, userType } = credentials;
 
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 500));
 
       // Accept any credentials - no validation
-      // Default to intermediary type, but this could be customized
+      // Use the selected userType from the form
       const authUser: AuthUser = {
         id: '1',
         name: username || 'Demo User',
-        type: 'intermediary', // Default type
-        permissions: this.getUserPermissions('intermediary')
+        type: userType, // Use the selected user type
+        permissions: this.getUserPermissions(userType)
       };
 
       this.currentUser = authUser;

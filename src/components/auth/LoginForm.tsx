@@ -26,7 +26,11 @@ export const LoginForm: React.FC = () => {
     }
     
     try {
-      const success = await login(credentials);
+      // Pass the selected userType along with credentials
+      const success = await login({
+        ...credentials,
+        userType
+      });
       if (!success) {
         setError('An error occurred during login');
       }
