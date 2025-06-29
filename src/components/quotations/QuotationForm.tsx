@@ -1,10 +1,10 @@
-// QuotationForm.tsx (updated)
 import React, { useState } from 'react';
 import { useAppState } from '../../context/AppStateContext';
 import { INSURANCE_PRODUCTS } from '../../utils/constants';
 import { Quotation } from '../../types';
 import Step2Motor from './Step2Motor';
 import Step2Property from './Step2Property';
+import Step2Health from './Step2Health';
 
 export const QuotationForm: React.FC<{ onCancel: () => void }> = ({ onCancel }) => {
   const { addQuotation } = useAppState();
@@ -21,17 +21,48 @@ export const QuotationForm: React.FC<{ onCancel: () => void }> = ({ onCancel }) 
     propertyValue: '',
     propertyLocation: '',
     coverageDetails: '',
-    amount: ''
+    amount: '',
+    // Health Insurance fields
+    whoIsThisFor: '',
+    numberOfPeople: '',
+    ageRange: '',
+    existingConditions: '',
+    coverageLevel: '',
+    companyName: '',
+    numberOfEmployees: '',
+    industryType: ''
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     const newQuotation: Omit<Quotation, 'id'> = {
-      ...formData,
+      clientName: formData.clientName,
+      clientEmail: formData.clientEmail,
+      product: formData.product,
+      coverage: formData.coverageType,
       amount: Number(formData.amount),
       status: 'pending',
-      date: new Date().toISOString().split('T')[0]
+      date: new Date().toISOString().split('T')[0],
+      // Motor Insurance specific fields
+      coverageType: formData.coverageType,
+      vehicleValue: formData.vehicleValue,
+      vehicleUsage: formData.vehicleUsage,
+      // Property Insurance specific fields
+      propertyType: formData.propertyType,
+      propertyValue: formData.propertyValue,
+      propertyLocation: formData.propertyLocation,
+      // Health Insurance specific fields
+      whoIsThisFor: formData.whoIsThisFor,
+      numberOfPeople: formData.numberOfPeople,
+      ageRange: formData.ageRange,
+      existingConditions: formData.existingConditions,
+      coverageLevel: formData.coverageLevel,
+      companyName: formData.companyName,
+      numberOfEmployees: formData.numberOfEmployees,
+      industryType: formData.industryType,
+      // Additional details
+      coverageDetails: formData.coverageDetails
     };
     
     addQuotation(newQuotation);
@@ -47,7 +78,15 @@ export const QuotationForm: React.FC<{ onCancel: () => void }> = ({ onCancel }) 
       propertyValue: '',
       propertyLocation: '',
       coverageDetails: '',
-      amount: ''
+      amount: '',
+      whoIsThisFor: '',
+      numberOfPeople: '',
+      ageRange: '',
+      existingConditions: '',
+      coverageLevel: '',
+      companyName: '',
+      numberOfEmployees: '',
+      industryType: ''
     });
     setStep(1);
     onCancel();
@@ -125,11 +164,17 @@ export const QuotationForm: React.FC<{ onCancel: () => void }> = ({ onCancel }) 
       </div>
     );
   } else if (step === 2) {
-    return formData.product === 'Motor Insurance' ? (
-      <Step2Motor formData={formData} setFormData={setFormData} setStep={setStep} />
-    ) : (
-      <Step2Property formData={formData} setFormData={setFormData} setStep={setStep} />
-    );
+    if (formData.product === 'Motor Insurance') {
+      return <Step2Motor formData={formData} setFormData={setFormData} setStep={setStep} />;
+    } else if (formData.product === 'Property & Fire Insurance') {
+      return <Step2Property formData={formData} setFormData={setFormData} setStep={setStep} />;
+    } else if (formData.product === 'Health Insurance') {
+      return <Step2Health formData={formData} setFormData={setFormData} setStep={setStep} />;
+    } else {
+      // For other insurance types, skip to step 3
+      setStep(3);
+      return null;
+    }
   } else {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">

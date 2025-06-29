@@ -27,6 +27,15 @@ export interface Quotation {
   propertyType?: string;
   propertyValue?: string;
   propertyLocation?: string;
+  // Health Insurance specific fields
+  whoIsThisFor?: string;
+  numberOfPeople?: string;
+  ageRange?: string;
+  existingConditions?: string;
+  coverageLevel?: string;
+  companyName?: string;
+  numberOfEmployees?: string;
+  industryType?: string;
   // Additional details
   coverageDetails?: string;
   requestNumber?: string;

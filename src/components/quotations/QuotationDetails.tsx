@@ -103,6 +103,66 @@ export const QuotationDetails: React.FC<QuotationDetailsProps> = ({ quotation, o
     </div>
   );
 
+  const renderHealthInsuranceDetails = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-600">Who is this for?</label>
+          <p className="text-lg text-gray-900 capitalize">{quotation.whoIsThisFor || 'Not specified'}</p>
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-600">Coverage Level</label>
+          <p className="text-lg text-gray-900 capitalize">{quotation.coverageLevel || 'Not specified'}</p>
+        </div>
+        
+        {quotation.whoIsThisFor === 'family' && quotation.numberOfPeople && (
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Number of Family Members</label>
+            <p className="text-lg text-gray-900">{quotation.numberOfPeople}</p>
+          </div>
+        )}
+        
+        {quotation.whoIsThisFor === 'group' && quotation.companyName && (
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Company Name</label>
+            <p className="text-lg text-gray-900">{quotation.companyName}</p>
+          </div>
+        )}
+      </div>
+      
+      <div className="space-y-4">
+        {quotation.ageRange && (
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Age Range</label>
+            <p className="text-lg text-gray-900">{quotation.ageRange}</p>
+          </div>
+        )}
+        
+        {quotation.whoIsThisFor === 'group' && quotation.numberOfEmployees && (
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Number of Employees</label>
+            <p className="text-lg text-gray-900">{quotation.numberOfEmployees}</p>
+          </div>
+        )}
+        
+        {quotation.whoIsThisFor === 'group' && quotation.industryType && (
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Industry Type</label>
+            <p className="text-lg text-gray-900 capitalize">{quotation.industryType}</p>
+          </div>
+        )}
+        
+        {quotation.existingConditions && (
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Additional Notes</label>
+            <p className="text-lg text-gray-900">{quotation.existingConditions}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   const renderGeneralDetails = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="space-y-4">
@@ -204,7 +264,8 @@ export const QuotationDetails: React.FC<QuotationDetailsProps> = ({ quotation, o
               
               {quotation.product === 'Motor Insurance' && renderMotorInsuranceDetails()}
               {quotation.product === 'Property & Fire Insurance' && renderPropertyInsuranceDetails()}
-              {quotation.product !== 'Motor Insurance' && quotation.product !== 'Property & Fire Insurance' && renderGeneralDetails()}
+              {quotation.product === 'Health Insurance' && renderHealthInsuranceDetails()}
+              {!['Motor Insurance', 'Property & Fire Insurance', 'Health Insurance'].includes(quotation.product) && renderGeneralDetails()}
             </div>
           </div>
         </div>
