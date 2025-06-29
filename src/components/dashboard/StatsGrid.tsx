@@ -11,7 +11,7 @@ export const StatsGrid: React.FC = () => {
   
   if (!user) return null;
 
-  const isIntermediary = user.user_type === 'intermediary';
+  const isIntermediary = user.type === 'intermediary';
 
   const intermediaryStats: StatsCardData[] = [
     {

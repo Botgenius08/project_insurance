@@ -15,13 +15,9 @@ export const RecentActivity: React.FC = () => {
               <Bell className="w-5 h-5 text-blue-500" />
               <div className="flex-1">
                 <p className="text-sm text-gray-800">{notification.message}</p>
-                <p className="text-xs text-gray-500">
-                  {new Date(notification.created_at).toLocaleString()}
-                </p>
+                <p className="text-xs text-gray-500">{notification.time}</p>
               </div>
-              {!notification.read && (
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              )}
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
             </div>
           ))
         ) : (
