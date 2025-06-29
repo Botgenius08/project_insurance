@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Shield, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { checkDemoUsers, createDemoUsers } from '../../utils/checkDemoUsers';
+import { UserTypeSelector } from './UserTypeSelector';
 
 export const LoginForm: React.FC = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [debugInfo, setDebugInfo] = useState('');
   const { login, loading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,30 +33,6 @@ export const LoginForm: React.FC = () => {
     }
   };
 
-  // Function to check demo users (for debugging)
-  const handleCheckDemoUsers = async () => {
-    setDebugInfo('Checking demo users...');
-    const result = await checkDemoUsers();
-    if (result.success) {
-      console.log('Demo users found:', result.users);
-      setDebugInfo(`Found ${result.users?.length || 0} demo users. Check console for details.`);
-    } else {
-      console.error('Error checking demo users:', result.error);
-      setDebugInfo(`Error: ${result.error}`);
-    }
-  };
-
-  // Function to create demo users if they don't exist
-  const handleCreateDemoUsers = async () => {
-    setDebugInfo('Creating demo users...');
-    const result = await createDemoUsers();
-    if (result.success) {
-      setDebugInfo(`Successfully created ${result.created} demo users!`);
-    } else {
-      setDebugInfo(`Error creating demo users: ${result.error}`);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md">
@@ -72,12 +47,6 @@ export const LoginForm: React.FC = () => {
         {error && (
           <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
             {error}
-          </div>
-        )}
-
-        {debugInfo && (
-          <div className="mb-4 p-3 bg-blue-100 border border-blue-400 text-blue-700 rounded-lg text-sm">
-            {debugInfo}
           </div>
         )}
         
@@ -136,23 +105,6 @@ export const LoginForm: React.FC = () => {
           <div className="text-xs text-gray-600 space-y-1">
             <div><strong>Intermediary:</strong> intermediary1 / password123</div>
             <div><strong>Employee:</strong> employee1 / password123</div>
-          </div>
-          
-          <div className="mt-3 space-y-2">
-            <button
-              type="button"
-              onClick={handleCheckDemoUsers}
-              className="w-full bg-gray-200 text-gray-700 py-1 px-3 rounded text-xs hover:bg-gray-300 transition duration-200"
-            >
-              Check Demo Users in Database
-            </button>
-            <button
-              type="button"
-              onClick={handleCreateDemoUsers}
-              className="w-full bg-green-200 text-green-700 py-1 px-3 rounded text-xs hover:bg-green-300 transition duration-200"
-            >
-              Create Demo Users
-            </button>
           </div>
         </div>
       </div>
