@@ -1,13 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { dataService } from '../services/dataService';
-import { Database } from '../types/database';
-
-type Quotation = Database['public']['Tables']['quotations']['Row'];
-type Policy = Database['public']['Tables']['policies']['Row'];
-type Claim = Database['public']['Tables']['claims']['Row'];
-type Task = Database['public']['Tables']['tasks']['Row'];
-type Notification = Database['public']['Tables']['notifications']['Row'];
+import { sampleQuotations, samplePolicies, sampleClaims, sampleTasks, sampleNotifications } from '../utils/sampleData';
+import { Quotation, Policy, Claim, Task, Notification } from '../types';
 
 interface AppStateContextType {
   // Data
@@ -22,9 +16,9 @@ interface AppStateContextType {
   setActiveTab: (tab: string) => void;
   
   // Data Actions
-  addQuotation: (quotation: Database['public']['Tables']['quotations']['Insert']) => Promise<void>;
-  updateTask: (taskId: string, updates: Database['public']['Tables']['tasks']['Update']) => Promise<void>;
-  refreshData: () => Promise<void>;
+  addQuotation: (quotation: Omit<Quotation, 'id'>) => void;
+  updateTask: (taskId: number, updates: Partial<Task>) => void;
+  refreshData: () => void;
   
   // Loading states
   loading: boolean;
@@ -73,7 +67,7 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
   // Security: Reset to dashboard when user type changes or unauthorized access
   useEffect(() => {
     if (user) {
-      const isValidTab = validateTabAccess(activeTab, user.user_type);
+      const isValidTab = validateTabAccess(activeTab, user.type);
       if (!isValidTab) {
         setActiveTab('dashboard');
       }
@@ -91,31 +85,24 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
   };
 
   const secureSetActiveTab = (tab: string) => {
-    if (user && validateTabAccess(tab, user.user_type)) {
+    if (user && validateTabAccess(tab, user.type)) {
       setActiveTab(tab);
     } else {
       setActiveTab('dashboard');
     }
   };
 
-  const refreshData = async () => {
+  const refreshData = () => {
     if (!isAuthenticated) return;
     
     setLoading(true);
     try {
-      const [quotationsData, policiesData, claimsData, tasksData, notificationsData] = await Promise.all([
-        dataService.getQuotations(),
-        dataService.getPolicies(),
-        dataService.getClaims(),
-        dataService.getTasks(),
-        dataService.getNotifications()
-      ]);
-
-      setQuotations(quotationsData);
-      setPolicies(policiesData);
-      setClaims(claimsData);
-      setTasks(tasksData);
-      setNotifications(notificationsData);
+      // Load sample data
+      setQuotations(sampleQuotations);
+      setPolicies(samplePolicies);
+      setClaims(sampleClaims);
+      setTasks(sampleTasks);
+      setNotifications(sampleNotifications);
     } catch (error) {
       console.error('Error refreshing data:', error);
     } finally {
@@ -123,28 +110,29 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
     }
   };
 
-  const addQuotation = async (quotationData: Database['public']['Tables']['quotations']['Insert']) => {
-    if (user?.user_type !== 'intermediary') {
+  const addQuotation = (quotationData: Omit<Quotation, 'id'>) => {
+    if (user?.type !== 'intermediary') {
       console.warn('Unauthorized attempt to add quotation');
       return;
     }
 
-    const success = await dataService.createQuotation(quotationData);
-    if (success) {
-      await refreshData(); // Refresh to get the latest data
-    }
+    const newQuotation: Quotation = {
+      ...quotationData,
+      id: Date.now() // Simple ID generation for local storage
+    };
+
+    setQuotations(prev => [newQuotation, ...prev]);
   };
 
-  const updateTask = async (taskId: string, updates: Database['public']['Tables']['tasks']['Update']) => {
-    if (user?.user_type !== 'employee') {
+  const updateTask = (taskId: number, updates: Partial<Task>) => {
+    if (user?.type !== 'employee') {
       console.warn('Unauthorized attempt to update task');
       return;
     }
 
-    const success = await dataService.updateTask(taskId, updates);
-    if (success) {
-      await refreshData(); // Refresh to get the latest data
-    }
+    setTasks(prev => prev.map(task => 
+      task.id === taskId ? { ...task, ...updates } : task
+    ));
   };
 
   const value: AppStateContextType = {

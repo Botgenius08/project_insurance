@@ -1,13 +1,9 @@
-import { supabase } from '../lib/supabase';
-import bcrypt from 'bcryptjs';
-import { Database } from '../types/database';
-
-type User = Database['public']['Tables']['users']['Row'];
+import { User, UserType } from '../types';
 
 export interface AuthUser {
   id: string;
-  username: string;
-  user_type: 'intermediary' | 'employee';
+  name: string;
+  type: UserType;
   permissions: string[];
 }
 
@@ -22,6 +18,38 @@ export interface LoginResponse {
   error?: string;
 }
 
+// Mock user database
+const MOCK_USERS = [
+  {
+    id: '1',
+    username: 'intermediary1',
+    password: 'password123',
+    name: 'John Intermediary',
+    type: 'intermediary' as UserType,
+  },
+  {
+    id: '2',
+    username: 'employee1',
+    password: 'password123',
+    name: 'Jane Employee',
+    type: 'employee' as UserType,
+  },
+  {
+    id: '3',
+    username: 'intermediary2',
+    password: 'password123',
+    name: 'Bob Intermediary',
+    type: 'intermediary' as UserType,
+  },
+  {
+    id: '4',
+    username: 'employee2',
+    password: 'password123',
+    name: 'Alice Employee',
+    type: 'employee' as UserType,
+  },
+];
+
 class AuthService {
   private currentUser: AuthUser | null = null;
 
@@ -29,40 +57,25 @@ class AuthService {
     try {
       const { username, password } = credentials;
 
-      // Fetch user from database
-      const { data: user, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('username', username)
-        .eq('is_active', true)
-        .single();
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-      if (error || !user) {
+      // Find user in mock database
+      const user = MOCK_USERS.find(u => u.username === username && u.password === password);
+
+      if (!user) {
         return {
           success: false,
           error: 'Invalid username or password'
         };
       }
-
-      // Verify password
-      const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-      
-      if (!isPasswordValid) {
-        return {
-          success: false,
-          error: 'Invalid username or password'
-        };
-      }
-
-      // Update last login timestamp
-      await supabase.rpc('update_last_login', { user_id: user.id });
 
       // Create auth user object
       const authUser: AuthUser = {
         id: user.id,
-        username: user.username,
-        user_type: user.user_type,
-        permissions: this.getUserPermissions(user.user_type)
+        name: user.name,
+        type: user.type,
+        permissions: this.getUserPermissions(user.type)
       };
 
       this.currentUser = authUser;
@@ -93,7 +106,7 @@ class AuthService {
     return this.currentUser !== null;
   }
 
-  private getUserPermissions(userType: 'intermediary' | 'employee'): string[] {
+  private getUserPermissions(userType: UserType): string[] {
     const permissions = {
       intermediary: [
         'view_quotations',

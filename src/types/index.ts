@@ -1,70 +1,65 @@
 export interface User {
   id: string;
-  username: string;
-  user_type: 'intermediary' | 'employee';
+  name: string;
+  type: 'intermediary' | 'employee';
   permissions: string[];
 }
 
 export interface Quotation {
-  id: string;
-  client_name: string;
-  client_email?: string;
+  id: number;
+  clientName: string;
+  clientEmail?: string;
   product: string;
   coverage?: string;
   amount: number;
   status: 'pending' | 'approved' | 'rejected';
-  created_at: string;
-  created_by: string;
+  date: string;
 }
 
 export interface Policy {
-  id: string;
-  policy_number: string;
-  client_name: string;
+  id: number;
+  policyNumber: string;
+  clientName: string;
   product: string;
   premium: number;
-  sum_insured?: number;
-  class_of_business?: string;
+  sumInsured?: number;
+  classOfBusiness?: string;
   status: 'active' | 'pending' | 'expired';
-  created_at: string;
-  created_by: string;
+  createdBy: string;
+  createdDate: string;
 }
 
 export interface Claim {
-  id: string;
-  claim_number: string;
-  client_name: string;
-  policy_number?: string;
-  class_of_business?: string;
-  gross_amount?: number;
-  excess_amount?: number;
-  salvage_amount?: number;
-  other_expense?: number;
-  net_amount: number;
+  id: number;
+  claimNumber: string;
+  clientName: string;
+  policyNumber?: string;
+  classOfBusiness?: string;
+  grossAmount?: number;
+  excessAmount?: number;
+  salvageAmount?: number;
+  otherExpense?: number;
+  netAmount?: number;
+  amount: number;
   status: 'submitted' | 'processing' | 'approved' | 'rejected';
-  created_at: string;
-  created_by: string;
+  date: string;
 }
 
 export interface Task {
-  id: string;
+  id: number;
   type: 'underwriting' | 'finance' | 'quotation';
   title: string;
-  assigned_to: string;
+  assignedTo: string;
   priority: 'high' | 'medium' | 'low';
-  due_date: string;
+  dueDate: string;
   status: string;
-  created_at: string;
-  created_by: string;
 }
 
 export interface Notification {
-  id: string;
+  id: number;
   message: string;
   type: 'info' | 'warning' | 'error' | 'success';
-  user_id: string;
-  read: boolean;
-  created_at: string;
+  time: string;
 }
 
 export interface StatsCardData {
