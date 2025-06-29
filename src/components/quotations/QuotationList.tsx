@@ -2,7 +2,11 @@ import React from 'react';
 import { useAppState } from '../../context/AppStateContext';
 
 export const QuotationList: React.FC = () => {
-  const { quotations } = useAppState();
+  const { quotations, setSelectedQuotation } = useAppState();
+
+  const handleViewQuotation = (quotation: any) => {
+    setSelectedQuotation(quotation);
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -36,7 +40,12 @@ export const QuotationList: React.FC = () => {
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-700">{quote.date}</td>
                 <td className="px-4 py-3 text-sm">
-                  <button className="text-blue-600 hover:text-blue-800 mr-3">View</button>
+                  <button 
+                    onClick={() => handleViewQuotation(quote)}
+                    className="text-blue-600 hover:text-blue-800 mr-3"
+                  >
+                    View
+                  </button>
                   <button className="text-green-600 hover:text-green-800">Convert</button>
                 </td>
               </tr>

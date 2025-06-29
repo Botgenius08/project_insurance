@@ -1,32 +1,11 @@
 import React, { useState } from 'react';
-import { FileText, Send, Eye, Download } from 'lucide-react';
+import { FileText, Send, Eye, Download, MessageCircle } from 'lucide-react';
+import { useAppState } from '../../context/AppStateContext';
+import { QuotationDetails } from '../quotations/QuotationDetails';
 
 export const QuoteManagement: React.FC = () => {
-  const [quoteRequests] = useState([
-    {
-      id: 1,
-      requestNumber: 'QR-2025-001',
-      intermediary: 'ABC Insurance Brokers',
-      clientName: 'Manufacturing Corp Ltd',
-      classOfBusiness: 'Commercial Property',
-      sumInsured: 800000000,
-      requestDate: '2025-01-15',
-      status: 'pending',
-      priority: 'high'
-    },
-    {
-      id: 2,
-      requestNumber: 'QR-2025-002',
-      intermediary: 'XYZ Brokers',
-      clientName: 'Transport Solutions Ltd',
-      classOfBusiness: 'Motor Fleet',
-      sumInsured: 150000000,
-      requestDate: '2025-01-14',
-      status: 'quoted',
-      priority: 'medium'
-    }
-  ]);
-
+  const { quotations, setSelectedQuotation, selectedQuotation } = useAppState();
+  
   const [livePolicies] = useState([
     {
       id: 1,
@@ -60,6 +39,19 @@ export const QuoteManagement: React.FC = () => {
     alert(`Attaching PDF quote for request ${requestId}...`);
   };
 
+  const handleViewQuotation = (quotation: any) => {
+    setSelectedQuotation(quotation);
+  };
+
+  if (selectedQuotation) {
+    return (
+      <QuotationDetails 
+        quotation={selectedQuotation} 
+        onBack={() => setSelectedQuotation(null)} 
+      />
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Quote Requests */}
@@ -81,20 +73,20 @@ export const QuoteManagement: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {quoteRequests.map(request => (
+              {quotations.map(request => (
                 <tr key={request.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{request.requestNumber}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700">{request.intermediary}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{request.requestNumber || `QR-${request.id}`}</td>
+                  <td className="px-4 py-3 text-sm text-gray-700">{request.intermediary || 'Unknown Intermediary'}</td>
                   <td className="px-4 py-3 text-sm text-gray-700">{request.clientName}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700">{request.classOfBusiness}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700">{request.sumInsured.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-sm text-gray-700">{request.product}</td>
+                  <td className="px-4 py-3 text-sm text-gray-700">{request.amount.toLocaleString()}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 text-xs rounded-full ${
                       request.priority === 'high' ? 'bg-red-100 text-red-700' :
                       request.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
                       'bg-green-100 text-green-700'
                     }`}>
-                      {request.priority}
+                      {request.priority || 'medium'}
                     </span>
                   </td>
                   <td className="px-4 py-3">
@@ -108,15 +100,22 @@ export const QuoteManagement: React.FC = () => {
                   <td className="px-4 py-3 text-sm">
                     <div className="flex space-x-2">
                       <button
-                        onClick={() => handleAttachPDF(request.id)}
+                        onClick={() => handleViewQuotation(request)}
                         className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition duration-200 flex items-center"
+                      >
+                        <Eye className="w-3 h-3 mr-1" />
+                        View
+                      </button>
+                      <button
+                        onClick={() => handleAttachPDF(request.id)}
+                        className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition duration-200 flex items-center"
                       >
                         <FileText className="w-3 h-3 mr-1" />
                         PDF
                       </button>
                       <button
                         onClick={() => handleSendQuote(request.id)}
-                        className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition duration-200 flex items-center"
+                        className="px-2 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 transition duration-200 flex items-center"
                       >
                         <Send className="w-3 h-3 mr-1" />
                         Send

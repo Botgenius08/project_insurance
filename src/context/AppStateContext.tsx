@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { sampleQuotations, samplePolicies, sampleClaims, sampleTasks, sampleNotifications } from '../utils/sampleData';
-import { Quotation, Policy, Claim, Task, Notification } from '../types';
+import { sampleQuotations, samplePolicies, sampleClaims, sampleTasks, sampleNotifications, sampleMessages } from '../utils/sampleData';
+import { Quotation, Policy, Claim, Task, Notification, Message } from '../types';
 
 interface AppStateContextType {
   // Data
@@ -10,14 +10,19 @@ interface AppStateContextType {
   claims: Claim[];
   tasks: Task[];
   notifications: Notification[];
+  messages: Message[];
   
   // UI State
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  selectedQuotation: Quotation | null;
+  setSelectedQuotation: (quotation: Quotation | null) => void;
   
   // Data Actions
   addQuotation: (quotation: Omit<Quotation, 'id'>) => void;
   updateTask: (taskId: number, updates: Partial<Task>) => void;
+  addMessage: (message: Omit<Message, 'id' | 'timestamp'>) => void;
+  getMessagesForQuotation: (quotationId: number) => Message[];
   refreshData: () => void;
   
   // Loading states
@@ -41,6 +46,7 @@ interface AppStateProviderProps {
 export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   const { user, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [selectedQuotation, setSelectedQuotation] = useState<Quotation | null>(null);
   const [loading, setLoading] = useState(false);
   
   // Data state
@@ -49,6 +55,7 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
   const [claims, setClaims] = useState<Claim[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   // Load data when user authenticates
   useEffect(() => {
@@ -61,6 +68,8 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
       setClaims([]);
       setTasks([]);
       setNotifications([]);
+      setMessages([]);
+      setSelectedQuotation(null);
     }
   }, [isAuthenticated, user]);
 
@@ -103,6 +112,7 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
       setClaims(sampleClaims);
       setTasks(sampleTasks);
       setNotifications(sampleNotifications);
+      setMessages(sampleMessages);
     } catch (error) {
       console.error('Error refreshing data:', error);
     } finally {
@@ -135,16 +145,35 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
     ));
   };
 
+  const addMessage = (messageData: Omit<Message, 'id' | 'timestamp'>) => {
+    const newMessage: Message = {
+      ...messageData,
+      id: Date.now(),
+      timestamp: new Date().toISOString()
+    };
+
+    setMessages(prev => [...prev, newMessage]);
+  };
+
+  const getMessagesForQuotation = (quotationId: number): Message[] => {
+    return messages.filter(message => message.quotationId === quotationId);
+  };
+
   const value: AppStateContextType = {
     quotations,
     policies,
     claims,
     tasks,
     notifications,
+    messages,
     activeTab,
     setActiveTab: secureSetActiveTab,
+    selectedQuotation,
+    setSelectedQuotation,
     addQuotation,
     updateTask,
+    addMessage,
+    getMessagesForQuotation,
     refreshData,
     loading,
   };

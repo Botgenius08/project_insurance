@@ -14,6 +14,24 @@ export interface Quotation {
   amount: number;
   status: 'pending' | 'approved' | 'rejected';
   date: string;
+  // Motor Insurance specific fields
+  coverageType?: string;
+  vehicleValue?: string;
+  vehicleUsage?: string;
+  excessBuyBack?: boolean;
+  truck?: boolean;
+  trailer?: boolean;
+  numberOfSeats?: string;
+  passengerServiceType?: string;
+  // Property Insurance specific fields
+  propertyType?: string;
+  propertyValue?: string;
+  propertyLocation?: string;
+  // Additional details
+  coverageDetails?: string;
+  requestNumber?: string;
+  intermediary?: string;
+  priority?: 'high' | 'medium' | 'low';
 }
 
 export interface Policy {
@@ -60,6 +78,24 @@ export interface Notification {
   message: string;
   type: 'info' | 'warning' | 'error' | 'success';
   time: string;
+}
+
+export interface Message {
+  id: number;
+  quotationId: number;
+  senderId: string;
+  senderName: string;
+  senderType: 'intermediary' | 'employee';
+  message: string;
+  timestamp: string;
+  attachments?: Attachment[];
+}
+
+export interface Attachment {
+  id: number;
+  name: string;
+  type: string;
+  url: string;
 }
 
 export interface StatsCardData {

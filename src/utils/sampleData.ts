@@ -1,4 +1,4 @@
-import { Quotation, Policy, Claim, Task, Notification } from '../types';
+import { Quotation, Policy, Claim, Task, Notification, Message } from '../types';
 
 export const sampleQuotations: Quotation[] = [
   { 
@@ -9,7 +9,16 @@ export const sampleQuotations: Quotation[] = [
     coverage: 'comprehensive',
     amount: 2880000, 
     status: 'pending', 
-    date: '2025-01-20' 
+    date: '2025-01-20',
+    requestNumber: 'QR-2025-001',
+    intermediary: 'ABC Insurance Brokers',
+    priority: 'high',
+    // Motor Insurance specific fields
+    coverageType: 'comprehensive',
+    vehicleValue: '50000000',
+    vehicleUsage: 'privateCars',
+    excessBuyBack: true,
+    coverageDetails: 'Comprehensive motor insurance for private vehicle with excess buy-back option'
   },
   { 
     id: 2, 
@@ -19,7 +28,15 @@ export const sampleQuotations: Quotation[] = [
     coverage: 'comprehensive',
     amount: 1920000, 
     status: 'approved', 
-    date: '2025-01-22' 
+    date: '2025-01-22',
+    requestNumber: 'QR-2025-002',
+    intermediary: 'XYZ Brokers',
+    priority: 'medium',
+    // Property Insurance specific fields
+    propertyType: 'commercial',
+    propertyValue: '100000000',
+    propertyLocation: 'Dar es Salaam CBD',
+    coverageDetails: 'Commercial property insurance for office building in CBD area'
   },
   { 
     id: 3, 
@@ -29,7 +46,11 @@ export const sampleQuotations: Quotation[] = [
     coverage: 'term',
     amount: 5760000, 
     status: 'pending', 
-    date: '2025-01-23' 
+    date: '2025-01-23',
+    requestNumber: 'QR-2025-003',
+    intermediary: 'DEF Insurance Services',
+    priority: 'low',
+    coverageDetails: 'Term life insurance policy for 20 years coverage'
   }
 ];
 
@@ -189,5 +210,35 @@ export const sampleNotifications: Notification[] = [
     message: 'Monthly actuarial report is ready for review', 
     type: 'info', 
     time: '4 hours ago' 
+  }
+];
+
+export const sampleMessages: Message[] = [
+  {
+    id: 1,
+    quotationId: 1,
+    senderId: 'intermediary1',
+    senderName: 'ABC Insurance Brokers',
+    senderType: 'intermediary',
+    message: 'Hello, I have submitted a motor insurance quotation for John Doe. The client is looking for comprehensive coverage with excess buy-back option. Please review and provide your feedback.',
+    timestamp: '2025-01-20T10:30:00Z'
+  },
+  {
+    id: 2,
+    quotationId: 1,
+    senderId: 'underwriter1',
+    senderName: 'Senior Underwriter',
+    senderType: 'employee',
+    message: 'Thank you for the submission. I have reviewed the quotation details. The vehicle value seems reasonable for a comprehensive policy. Could you please provide additional information about the vehicle\'s age and usage history?',
+    timestamp: '2025-01-20T14:15:00Z'
+  },
+  {
+    id: 3,
+    quotationId: 1,
+    senderId: 'intermediary1',
+    senderName: 'ABC Insurance Brokers',
+    senderType: 'intermediary',
+    message: 'The vehicle is a 2022 Toyota Camry, primarily used for personal transportation. The client has a clean driving record with no claims in the past 5 years.',
+    timestamp: '2025-01-20T15:45:00Z'
   }
 ];

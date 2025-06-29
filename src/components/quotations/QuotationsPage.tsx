@@ -1,10 +1,21 @@
-// QuotationsPage.tsx
 import React, { useState } from 'react';
 import { QuotationList } from './QuotationList';
 import { QuotationForm } from './QuotationForm';
+import { QuotationDetails } from './QuotationDetails';
+import { useAppState } from '../../context/AppStateContext';
 
 export const QuotationsPage: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
+  const { selectedQuotation, setSelectedQuotation } = useAppState();
+
+  if (selectedQuotation) {
+    return (
+      <QuotationDetails 
+        quotation={selectedQuotation} 
+        onBack={() => setSelectedQuotation(null)} 
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
