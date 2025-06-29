@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Eye, EyeOff, Info } from 'lucide-react';
+import { Shield, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { UserTypeSelector } from './UserTypeSelector';
 import { UserType } from '../../types';
@@ -28,15 +28,11 @@ export const LoginForm: React.FC = () => {
     try {
       const success = await login(credentials);
       if (!success) {
-        setError('Invalid username or password');
+        setError('An error occurred during login');
       }
     } catch (error) {
       setError('An error occurred during login');
     }
-  };
-
-  const fillCredentials = (username: string, password: string) => {
-    setCredentials({ username, password });
   };
 
   return (
@@ -48,54 +44,6 @@ export const LoginForm: React.FC = () => {
           </div>
           <h1 className="text-2xl font-bold text-gray-800">Insurance Platform</h1>
           <p className="text-gray-600">Secure access for intermediaries and employees</p>
-        </div>
-        
-        {/* Test Credentials Section */}
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex items-center mb-2">
-            <Info className="w-4 h-4 text-blue-600 mr-2" />
-            <h3 className="text-sm font-medium text-blue-800">Test Credentials</h3>
-          </div>
-          <div className="space-y-2 text-xs">
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <p className="font-medium text-blue-700 mb-1">Intermediaries:</p>
-                <button
-                  type="button"
-                  onClick={() => fillCredentials('intermediary1', 'password123')}
-                  className="block w-full text-left p-1 hover:bg-blue-100 rounded text-blue-600 hover:text-blue-800"
-                >
-                  intermediary1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => fillCredentials('intermediary2', 'password123')}
-                  className="block w-full text-left p-1 hover:bg-blue-100 rounded text-blue-600 hover:text-blue-800"
-                >
-                  intermediary2
-                </button>
-              </div>
-              <div>
-                <p className="font-medium text-blue-700 mb-1">Employees:</p>
-                <button
-                  type="button"
-                  onClick={() => fillCredentials('employee1', 'password123')}
-                  className="block w-full text-left p-1 hover:bg-blue-100 rounded text-blue-600 hover:text-blue-800"
-                >
-                  employee1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => fillCredentials('employee2', 'password123')}
-                  className="block w-full text-left p-1 hover:bg-blue-100 rounded text-blue-600 hover:text-blue-800"
-                >
-                  employee2
-                </button>
-              </div>
-            </div>
-            <p className="text-blue-600 mt-2">Password for all: <span className="font-mono">password123</span></p>
-            <p className="text-blue-500 text-xs">Click any username to auto-fill credentials</p>
-          </div>
         </div>
         
         {error && (

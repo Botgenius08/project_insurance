@@ -18,38 +18,6 @@ export interface LoginResponse {
   error?: string;
 }
 
-// Mock user database
-const MOCK_USERS = [
-  {
-    id: '1',
-    username: 'intermediary1',
-    password: 'password123',
-    name: 'John Intermediary',
-    type: 'intermediary' as UserType,
-  },
-  {
-    id: '2',
-    username: 'employee1',
-    password: 'password123',
-    name: 'Jane Employee',
-    type: 'employee' as UserType,
-  },
-  {
-    id: '3',
-    username: 'intermediary2',
-    password: 'password123',
-    name: 'Bob Intermediary',
-    type: 'intermediary' as UserType,
-  },
-  {
-    id: '4',
-    username: 'employee2',
-    password: 'password123',
-    name: 'Alice Employee',
-    type: 'employee' as UserType,
-  },
-];
-
 class AuthService {
   private currentUser: AuthUser | null = null;
 
@@ -60,22 +28,13 @@ class AuthService {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      // Find user in mock database
-      const user = MOCK_USERS.find(u => u.username === username && u.password === password);
-
-      if (!user) {
-        return {
-          success: false,
-          error: 'Invalid username or password'
-        };
-      }
-
-      // Create auth user object
+      // Accept any credentials - no validation
+      // Default to intermediary type, but this could be customized
       const authUser: AuthUser = {
-        id: user.id,
-        name: user.name,
-        type: user.type,
-        permissions: this.getUserPermissions(user.type)
+        id: '1',
+        name: username || 'Demo User',
+        type: 'intermediary', // Default type
+        permissions: this.getUserPermissions('intermediary')
       };
 
       this.currentUser = authUser;
