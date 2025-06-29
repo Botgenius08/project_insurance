@@ -65,7 +65,9 @@ export const samplePolicies: Policy[] = [
     classOfBusiness: 'Motor',
     status: 'active',
     createdBy: 'intermediary',
-    createdDate: '2025-01-15'
+    createdDate: '2025-01-15',
+    inceptionDate: '2025-01-15',
+    expiryDate: '2025-01-15'
   },
   { 
     id: 2, 
@@ -77,7 +79,9 @@ export const samplePolicies: Policy[] = [
     classOfBusiness: 'Property',
     status: 'active',
     createdBy: 'employee',
-    createdDate: '2025-01-16'
+    createdDate: '2025-01-16',
+    inceptionDate: '2025-01-16',
+    expiryDate: '2025-01-16'
   },
   { 
     id: 3, 
@@ -89,7 +93,51 @@ export const samplePolicies: Policy[] = [
     classOfBusiness: 'Life',
     status: 'pending',
     createdBy: 'intermediary',
-    createdDate: '2025-01-17'
+    createdDate: '2025-01-17',
+    inceptionDate: '2025-01-17',
+    expiryDate: '2025-01-17'
+  },
+  { 
+    id: 4, 
+    policyNumber: 'POL-2024-0045', 
+    clientName: 'David Brown', 
+    product: 'Motor Insurance', 
+    premium: 3200000, 
+    sumInsured: 60000000,
+    classOfBusiness: 'Motor',
+    status: 'renewing',
+    createdBy: 'intermediary',
+    createdDate: '2024-12-15',
+    inceptionDate: '2024-12-15',
+    expiryDate: '2025-02-15'
+  },
+  { 
+    id: 5, 
+    policyNumber: 'POL-2024-0032', 
+    clientName: 'Emma Wilson', 
+    product: 'Health Insurance', 
+    premium: 1800000, 
+    sumInsured: 25000000,
+    classOfBusiness: 'Health',
+    status: 'lapsed',
+    createdBy: 'intermediary',
+    createdDate: '2024-11-10',
+    inceptionDate: '2024-11-10',
+    expiryDate: '2024-12-25'
+  },
+  { 
+    id: 6, 
+    policyNumber: 'POL-2025-0004', 
+    clientName: 'Frank Miller', 
+    product: 'Travel Insurance', 
+    premium: 450000, 
+    sumInsured: 15000000,
+    classOfBusiness: 'Travel',
+    status: 'pending',
+    createdBy: 'intermediary',
+    createdDate: '2025-01-18',
+    inceptionDate: '2025-01-18',
+    expiryDate: '2025-01-18'
   }
 ];
 

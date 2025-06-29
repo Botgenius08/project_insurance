@@ -51,9 +51,11 @@ export interface Policy {
   premium: number;
   sumInsured?: number;
   classOfBusiness?: string;
-  status: 'active' | 'pending' | 'expired';
+  status: 'active' | 'pending' | 'expired' | 'renewing' | 'lapsed';
   createdBy: string;
   createdDate: string;
+  inceptionDate: string;
+  expiryDate: string;
 }
 
 export interface Claim {
